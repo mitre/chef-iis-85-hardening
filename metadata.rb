@@ -6,6 +6,7 @@ description 'Installs/Configures chef_iis_85_hardening'
 long_description 'Installs/Configures chef_iis_85_hardening'
 version '0.1.0'
 chef_version '>= 12.14' if respond_to?(:chef_version)
+depends 'iis'
 
 # The `issues_url` points to the location where issues for this cookbook are
 # tracked.  A `View Issues` link will be displayed on this cookbook's page when
