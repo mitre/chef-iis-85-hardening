@@ -57,7 +57,7 @@ powershell_script 'V-76753' do
   EOH
 end
 
-powershell_script 'V-76747' do
+powershell_script 'V-76747, V-76697' do
   code <<-EOH
   Set-WebConfigurationProperty -filter "system.ApplicationHost/log/centralW3CLogFile" -name directory -value #{node['iis']['logDirectory']} -PSPath "MACHINE/WEBROOT/APPHOST"
   Set-WebConfigurationProperty -filter "system.ApplicationHost/log/centralW3CLogFile" -name period -value Daily -PSPath "MACHINE/WEBROOT/APPHOST"
@@ -93,5 +93,48 @@ end
 powershell_script 'V-76713' do
   code <<-EOH
   Uninstall-WindowsFeature -Name Web-DAV-Publishing
+  EOH
+end
+
+powershell_script 'V-76711' do
+  code <<-EOH
+  Set-Location C:\\Windows\\System32\\inetsrv
+  .\\appcmd.exe set config -section:system.webServer/staticContent /-"[fileExtension='.exe']" /commit:MACHINE/WEBROOT/APPHOST
+  .\\appcmd.exe set config -section:system.webServer/staticContent /-"[fileExtension='.dll']" /commit:MACHINE/WEBROOT/APPHOST
+  .\\appcmd.exe set config -section:system.webServer/staticContent /-"[fileExtension='.com']" /commit:MACHINE/WEBROOT/APPHOST
+  .\\appcmd.exe set config -section:system.webServer/staticContent /-"[fileExtension='.bat']" /commit:MACHINE/WEBROOT/APPHOST
+  .\\appcmd.exe set config -section:system.webServer/staticContent /-"[fileExtension='.csh']" /commit:MACHINE/WEBROOT/APPHOST
+  EOH
+end
+
+powershell_script 'V-76679, V-76681, V-76683' do
+  code <<-EOH
+  Install-WindowsFeature -Name Web-Server
+  Install-WindowsFeature -Name Web-WebServer
+  Install-WindowsFeature -Name Web-Common-Http
+  EOH
+end
+
+# `User Agent` and `Protocol Status` must be manually configured
+powershell_script 'V-76681, V-76689' do
+  code <<-EOH
+  Set-WebConfigurationProperty -Filter System.Applicationhost/Sites/SiteDefaults/logfile -Name LogExtFileFlags -Value "Date,Time,ClientIP,UserName,Method,UriQuery,Referer"
+  EOH
+end
+
+powershell_script 'V-76683' do
+  code <<-EOH
+  Set-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile" -name "logTargetW3C" -value "File,ETW"
+  EOH
+end
+
+powershell_script 'V-76687, V-76689' do
+  code <<-EOH
+  Set-WebConfigurationProperty -filter "system.applicationHost/sites/siteDefaults/logFile" -name logFormat -value W3C -PSPath "MACHINE/WEBROOT/APPHOST"
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Connection';sourceName='Connection';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Warning';sourceName='Warning';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='User-Agent';sourceName='User-Agent';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Authorization';sourceName='Authorization';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Content-Type';sourceName='Content-Type';sourceType='ResponseHeader'}
   EOH
 end
