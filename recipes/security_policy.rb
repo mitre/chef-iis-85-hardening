@@ -4,14 +4,12 @@
 #
 # Copyright:: 2018, The Authors, All Rights Reserved.
 
-################################# NOT WORKING #################################
-# V-76767
-# For some reason the following control is hanging
-if node['iis']['file_system_object_component'] == 'disabled'
-  powershell_script 'V-76767' do
-    code <<-EOH
-    regsvr32 scrrun.dll /u
-    EOH
-  end
+template "V-76767 Setup" do
+  path "#{node['iis']['disableFileSysObjDir']}\\Disable-Scripting.FileSystemObject.ps1"
+  source 'Disable-Scripting.FileSystemObject.ps1.erb'
+  notifies :run, 'powershell_script[V-76767]', :immediately
 end
-################################# NOT WORKING #################################
+
+powershell_script 'V-76767' do
+    code ". #{node['iis']['disableFileSysObjDir']}\\Disable-Scripting.FileSystemObject.ps1"
+end

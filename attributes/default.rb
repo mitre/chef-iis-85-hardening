@@ -15,3 +15,5 @@ default['iis']['computerName'] = 'VAGRANT-IFT3JLA'
 default['iis']['validation'] = 'HMACSHA512'
 
 default['iis']['sessionStateTimeout'] = '00:20:00'
+
+default['iis']['disableFileSysObjDir'] = 'C:\Users\vagrant\Documents'
