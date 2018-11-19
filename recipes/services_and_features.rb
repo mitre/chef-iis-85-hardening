@@ -124,17 +124,17 @@ end
 
 powershell_script 'V-76683' do
   code <<-EOH
-  Set-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile" -name "logTargetW3C" -value "File,ETW"
+  Set-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/Sites/SiteDefaults/logFile" -name "logTargetW3C" -value "File,ETW"
   EOH
 end
 
 powershell_script 'V-76687, V-76689' do
   code <<-EOH
   Set-WebConfigurationProperty -filter "system.applicationHost/sites/siteDefaults/logFile" -name logFormat -value W3C -PSPath "MACHINE/WEBROOT/APPHOST"
-  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Connection';sourceName='Connection';sourceType='RequestHeader'}
-  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Warning';sourceName='Warning';sourceType='RequestHeader'}
-  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='User-Agent';sourceName='User-Agent';sourceType='RequestHeader'}
-  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Authorization';sourceName='Authorization';sourceType='RequestHeader'}
-  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/site[@name='Default Web Site']/logFile/customFields" -name "." -value @{logFieldName='Content-Type';sourceName='Content-Type';sourceType='ResponseHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/SiteDefaults/logFile/customFields" -name "." -value @{logFieldName='Connection';sourceName='Connection';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/SiteDefaults/logFile/customFields" -name "." -value @{logFieldName='Warning';sourceName='Warning';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/SiteDefaults/logFile/customFields" -name "." -value @{logFieldName='User-Agent';sourceName='User-Agent';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/SiteDefaults/logFile/customFields" -name "." -value @{logFieldName='Authorization';sourceName='Authorization';sourceType='RequestHeader'}
+  Add-WebConfigurationProperty -pspath 'MACHINE/WEBROOT/APPHOST'  -filter "system.applicationHost/sites/SiteDefaults/logFile/customFields" -name "." -value @{logFieldName='Content-Type';sourceName='Content-Type';sourceType='ResponseHeader'}
   EOH
 end
